@@ -1,4 +1,4 @@
-R scripts for setting up gyroscopeV2 viewer in R for zebrafish data. Requires gmra and gyroscopeV2 (available from www.math.duke.edu/~sgerber/software) and Rmatlab packages. 
+R scripts for setting up gyroscopeV2 viewer in R for zebrafish data. Requires gmra and gyroscopeV2 (available from www.math.duke.edu/~sgerber/software) and R.matlab packages. 
 
 The setup script expects to have the session recordings in subfolders in this directory named session_x, the outliers files save in this directory and the reference stacks in  saved in a subfolder reference_stacks and name dreferenceX.mat.
 Note that you might need to resave the reference stacks from matlb witha different version number since RMatlab csometimes has trouble reading newer matlab versions data files.
