@@ -1,5 +1,7 @@
-R scripts for setting up gyroscopeV2 viewer in R for zebrafish data. Requires
-gmra, RColorBrewer, RMatlab and focus (and gyroscopeV2 to run older scripts).
+R scripts for setting up focus viewer in R for zebrafish data. Requires the R
+packages gmra, RColorBrewer, RMatlab and focus (and gyroscopeV2 to run older
+scripts). The package focus needs freeglut (or openglut) to be installed (glut
+won't work).
 
 
 The setup script expects to have the session recordings in subfolders in this
