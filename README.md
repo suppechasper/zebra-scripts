@@ -8,7 +8,7 @@ The setup script expects to have the session recordings in subfolders in this
 directory named session_x, the outliers files save in this directory and the
 reference stacks in  saved in a subfolder reference_stacks and name
 dreferenceX.mat.  Note that you might need to resave the reference stacks from
-matlb witha different version number since RMatlab csometimes has trouble
+matlb with a different version number since RMatlab sometimes has trouble
 reading newer matlab versions data files.
 
 The scripts are divided into preprocessing and running the visualization.
@@ -21,7 +21,7 @@ Adjust time frames, sigma and if necessary file paths if your setup differs from
 the defauls in those scripts. If naming of varibales in the matlab files changed
 adjust read.data.R to reflect those changes. 
 
-The visualization si run through the scripts:
+The visualization is run through the scripts:
 - run.focus.R
 - run.focus.multi.R
 Adjust settings as desired. Options are described in the comments in the scripts.
