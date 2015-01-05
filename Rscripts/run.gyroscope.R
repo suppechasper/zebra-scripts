@@ -1,24 +1,31 @@
+library(gyroscopeV2)
+library(R.matlab)
+source("Rscripts/run.gmra.R")  
+
+
+#if data files are powerspectura decide wheteher to use mean or not
+#X = X[ 2, ncol(X)] 
+
 #threshold based on variance
 v <- apply(X, 1, var)
 ind = which( v > 0  )
-Xs = t(scale(t(X[ind, ]) ) )
-
+X = X[ind, ]
 
 #load referenc stack
-library(R.matlab)
 ref <- readMat(sprintf("reference_stacks/reference%d.mat",  session))
 ref =ref$currentStack
 xyzInd  = arrayInd( 1:length(ref), .dim=dim(ref) )[ind, ]
 slices = rev(dim(ref)/2)
 
-
+lambda = 0.01
+jointSpatial = T
 #run gmra
-library(gmra)
-Xs = Xs / sqrt( sum(Xs[1, ]^2) )
-gmra <- gmra.create.ikm(Xs, eps=0.1, nKids=128, threshold=0.001, maxIter=200,
-    stop=3, nRuns=1, split=3, similarity=2)
+if(jointSpatial){
+  gmra <- run.gmra.joint(X, lambda, xyzInd)
+}else{
+  gmra <- run.gmra(X)
+}
 
 #run visualization
-library(gyroscopeV2)
-gyroscope.slices.gmra( gmra, conv = xyzInd, volume=ref, slices=slices)
+gyroscope.slices.gmra( gmra, nCor= ncol(X), conv = xyzInd, volume=ref, slices=slices)
 

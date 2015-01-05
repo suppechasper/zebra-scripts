@@ -1,0 +1,71 @@
+library(R.matlab)
+library(focus)
+
+source("Rscripts/run.gmra.R")
+
+
+#use spatial information for hierarchical clustering?
+jointSpatial = T
+#tradeoff between spatial and signal influence for clustering
+#more details in run.gmra.R 
+lambda = 0.01
+#standardize data / i.e. use corrrelation for clustering and visualization
+standardize = T
+
+#if data files are powerspectura decide whether to use mean or not
+#X = X[ 2, ncol(X)] 
+
+#threshold based on variance
+v <- apply(X, 1, var)
+ind = which( v > 0  )
+X = X[ind, ]
+
+
+#load referenc stack
+ref <- readMat(sprintf("reference_stacks/reference%d.mat",  session))
+ref =ref$currentStack
+xyzInd  = arrayInd( 1:length(ref), .dim=dim(ref) )[ind, ]
+slices = rev(dim(ref)/2)
+  
+xy = ref[,,slices[1]]
+xz = ref[,slices[2],]
+zy = ref[slices[3],,]
+
+xyInd = xyzInd[, c(1,2)]
+xzInd = xyzInd[, c(1,3)]
+zyInd = xyzInd[, c(3,2)]
+
+
+#run gmra (settings for gmra computations can be chnaged in run.gmra.R)
+if(jointSpatial){
+  gmra <- run.gmra.joint(X, lambda, xyzInd, standardize=standardize)
+}else{
+  gmra <- run.gmra(X, standardize=standardize)
+}
+
+#setup and run visualization
+data <- focus.create.gmra.data(gmra, ncol(X) )
+if(standardize){
+  proj <- focus.create.planar.projection( ncol(X) )
+}else{
+  proj <- focus.create.linear.projection( ncol(X) )
+}
+
+
+focus.start()
+if(standardize){
+  focus.add.correlation.display(data, proj, 0, 0.25, 0.5, 0.75)
+}else{
+  focus.add.linear.projection.display(data, proj, 0, 0.25, 0.5, 0.75)
+}
+
+focus.add.profile.display(data, proj, 0, 0.0, 0.5, 0.25)
+
+focus.add.pca.display(data, proj, 0.75, 0, 0.25, 0.25)
+
+focus.add.image.display(data, xy, xyInd, 0.5, 0.25, 0.25, 0.5)
+focus.add.image.display(data, xz, xzInd, 0.75, 0.25, 0.25, 0.5)
+focus.add.image.display(data, t(zy), zyInd, 0.5, 0.75, 0.25, 0.25)
+  
+
+

@@ -38,11 +38,16 @@ smooth.convolve <- function(X, sigma, rows=TRUE){
 }
 
 
+spectrum.fft <- function(x){
+  fx = fft(x)
+  power = sqrt(Re(fx)^2+ Im(fx)^2) / length(x)
+  power
+}
 
 power.spectrum.rows <- function(X){ 
   for(i in 1:nrow(X) ){
 #X[i,] = Re(fft(X[i, ]))^2
-    X[i,] = spec.ar(X[i, ], plot=F, n.freq=ncol(X) )$spec
+    X[i,] = spectrum.fft(X[i, ])
   }
   X
 }
