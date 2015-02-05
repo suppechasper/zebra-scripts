@@ -61,7 +61,7 @@ for(i in 1:length(files)){
     if(standardize){
       proj <- focus.create.planar.projection( ncol(X) )
     }else{
-      proj <- focus.create.linear.projection( ncol(X) )
+      proj <- focus.create.hyperbolic.line.projection( ncol(X) )
     }
   }
 
@@ -77,7 +77,7 @@ for(i in 1:length(files)){
     focus.add.correlation.display(data, proj, 0.1, 0.25, 0.5, 0.75, i==1)
   }
   else{
-    focus.add.linear.projection.display(data, proj, 0.1, 0.25, 0.5, 0.75, i==1)
+    focus.add.line.projection.display(data, proj, 0.1, 0.25, 0.5, 0.75, i==1)
   }
   
   focus.add.profile.display(data, proj, 0.1, 0.0, 0.5, 0.25, i == 1)

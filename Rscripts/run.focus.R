@@ -6,19 +6,25 @@ source("Rscripts/run.gmra.R")
 
 #use spatial information for hierarchical clustering?
 jointSpatial = T
-#tradeoff between spatial and signal influence for clustering
-#more details in run.gmra.R 
-lambda = 0.01
 #standardize data / i.e. use corrrelation for clustering and visualization
-standardize = T
+standardize = F
 
 #if data files are powerspectura decide whether to use mean or not
 #X = X[ 2, ncol(X)] 
 
 #threshold based on variance
+X = scale(X, center=T, scale=F)
 v <- apply(X, 1, var)
 ind = which( v > 0  )
 X = X[ind, ]
+
+#tradeoff between spatial and signal influence for clustering
+#more details in run.gmra.R 
+if(standardize){
+  lambda = 0.01 
+}else{
+  lambda = 10 / mean( sqrt(rowSums(X^2)) )
+}
 
 
 #load referenc stack
@@ -46,18 +52,16 @@ if(jointSpatial){
 #setup and run visualization
 data <- focus.create.gmra.data(gmra, ncol(X) )
 if(standardize){
-  proj <- focus.create.planar.projection( ncol(X) )
+  proj <- focus.create.orthogonal.projection( data )
 }else{
-  proj <- focus.create.linear.projection( ncol(X) )
+  proj <- focus.create.single.point.focus.projection( data )
 }
 
 
 focus.start()
-if(standardize){
-  focus.add.correlation.display(data, proj, 0, 0.25, 0.5, 0.75)
-}else{
-  focus.add.linear.projection.display(data, proj, 0, 0.25, 0.5, 0.75)
-}
+
+focus.add.projection.display(data, proj, 0, 0.25, 0.5, 0.75)
+
 
 focus.add.profile.display(data, proj, 0, 0.0, 0.5, 0.25)
 
