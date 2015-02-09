@@ -29,7 +29,7 @@ a = min( 0.1, 1/(n+1) )
 
 cols= brewer.pal(name="Paired", n=12)
 
-focus.start()
+projs <- list()
 for(i in 1:length(files)){
 
   load( files[i] )
@@ -54,35 +54,42 @@ for(i in 1:length(files)){
   }else{
     gmra <- run.gmra(X, standardize=standardize)
   }
+  
+  data <- focus.create.gmra.data(gmra, ncol(X) )
 
 
   #setup visualization elements for this data set
-  if( independent || (i==1) ){
-    if(standardize){
-      proj <- focus.create.planar.projection( ncol(X) )
-    }else{
-      proj <- focus.create.hyperbolic.line.projection( ncol(X) )
-    }
+  if(standardize){
+    proj <- focus.create.orthogonal.projection( data, scaled=FALSE, fixed=TRUE,
+        tripod=TRUE )
+  }else{
+    proj <- focus.create.single.point.focus.projection( data )
   }
 
+  projs[i] = proj;
 
-  data <- focus.create.gmra.data(gmra, ncol(X) )
   focus.set.group.colors.ramp( data, colorRamp( c(cols[2*i],cols[2*i-1]) ), 9)
   dcol <- col2rgb( cols[2*i]) / 255
   focus.set.default.color(data, dcol[1], dcol[2], dcol[3])
 
 
 
-  if(standardize){
-    focus.add.correlation.display(data, proj, 0.1, 0.25, 0.5, 0.75, i==1)
+  pdel = focus.add.projection.display(proj, 0.1, 0.25, 0.5, 0.75)
+  if(i == 1){
+    if(standardize){
+      focus.add.circle.background(pdel, 1.0)
+      focus.add.vertical.circle.lines.background(pdel, 1.0, 10)
+    }else{
+      for( r in c(0.25, 0.5, 1.0, 2,0) ){
+        focus.add.center.shadow.background(pdel, r)
+      }
+      focus.add.circle.background(pdel, 1.0)
+    }    
   }
-  else{
-    focus.add.line.projection.display(data, proj, 0.1, 0.25, 0.5, 0.75, i==1)
-  }
-  
-  focus.add.profile.display(data, proj, 0.1, 0.0, 0.5, 0.25, i == 1)
 
-  focus.add.pca.display(data, proj, 0, (i-1)*a, 0.1, a)
+  focus.add.profile.display(proj, 0.1, 0.0, 0.5, 0.25, showBG = (i == 1) )
+
+  focus.add.pca.display(proj, 0, (i-1)*a, 0.1, a)
  
  
   slices = rev(dim(ref)/2)
@@ -98,7 +105,12 @@ for(i in 1:length(files)){
   focus.add.image.display(data,    xz, xzInd, 0.875, 0   , 0.125, 0.5 , i==1)
   focus.add.image.display(data, t(zy), zyInd, 0.65 , 0.5 , 0.225, 0.25, i==1)
 
+  
 }
 
+if( !independent ){
+  focus.create.projection.group( projs )
+}
 
+focus.start()
 

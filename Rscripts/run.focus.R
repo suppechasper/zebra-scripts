@@ -52,20 +52,29 @@ if(jointSpatial){
 #setup and run visualization
 data <- focus.create.gmra.data(gmra, ncol(X) )
 if(standardize){
-  proj <- focus.create.orthogonal.projection( data )
+  proj <- focus.create.orthogonal.projection( data, scaled=FALSE, fixed=TRUE, tripod=TRUE  )
 }else{
   proj <- focus.create.single.point.focus.projection( data )
 }
 
 
-focus.start()
 
-focus.add.projection.display(data, proj, 0, 0.25, 0.5, 0.75)
+pdel = focus.add.projection.display(proj, 0, 0.25, 0.5, 0.75)
+
+if(standardize){
+  focus.add.circle.background(pdel, 1.0)
+  focus.add.vertical.circle.lines.background(pdel, 1.0, 10)
+}else{
+  for( r in c(0.25, 0.5, 1.0, 2,0) ){
+    focus.add.center.shadow.background(pdel, r)
+  }
+  focus.add.circle.background(pdel, 1.0)
+}    
 
 
-focus.add.profile.display(data, proj, 0, 0.0, 0.5, 0.25)
+focus.add.profile.display(proj, 0, 0.0, 0.5, 0.25)
 
-focus.add.pca.display(data, proj, 0.75, 0, 0.25, 0.25)
+focus.add.pca.display(proj, 0.75, 0, 0.25, 0.25)
 
 focus.add.image.display(data, xy, xyInd, 0.5, 0.25, 0.25, 0.5)
 focus.add.image.display(data, xz, xzInd, 0.75, 0.25, 0.25, 0.5)
@@ -73,3 +82,4 @@ focus.add.image.display(data, t(zy), zyInd, 0.5, 0.75, 0.25, 0.25)
   
 
 
+focus.start()
