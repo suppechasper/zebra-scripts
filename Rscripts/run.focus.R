@@ -13,7 +13,6 @@ standardize = F
 #X = X[ 2, ncol(X)] 
 
 #threshold based on variance
-X = scale(X, center=T, scale=F)
 v <- apply(X, 1, var)
 ind = which( v > 0  )
 X = X[ind, ]
